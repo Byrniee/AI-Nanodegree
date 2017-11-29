@@ -1,31 +1,32 @@
 from Utils import *
 
-def eliminate(values):
-    """Eliminate values from peers of each box with a single value.
+def only_choice(values):
+    """Finalize all values that are the only choice for a unit.
 
-    Go through all the boxes, and whenever there is a box with a single value,
-    eliminate this value from the set of values of all its peers.
+    Go through all the units, and whenever there is a unit with a value
+    that only fits in one box, assign the value to this box.
 
-    Args:
-        values: Sudoku in dictionary form.
-    Returns:
-        Resulting Sudoku in dictionary form after eliminating values.
-
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after filling in only choices.
     """
-    # find all of the boxes which only have 1 number in them
-    solvedValues = []
+    
+    # All the posible didgets in the sudoku
+    allDidgets = "123456789"
 
-    # find all of the boxes which only have 1 number in them
-    for box in values.keys():
-        if len(values[box]) == 1:
-            solvedValues.append(box)
+    # Loop through each unit in the puzzel
+    for unit in unitlist:
+        # Loop through each didget in all possible didgets
+        for didget in allDidgets:
+            # This list will contain each box occurance in the unit of the didget
+            didgetOccurencesInUnit = []
 
-    # loop through each solved box and remove the solved didget from its peers
-    for box in solvedValues:
-        solvedDidgit = values[box]
-
-        # loop through this boxes peers and remove the solved didget
-        for peer in peers[box]:
-            values[peer] = values[peer].replace(solvedDidgit, '')
+            # Add each occurance of the didget to the list
+            for box in unit:
+                if didget in values[box]:
+                    didgetOccurencesInUnit.append(box)
+            
+            # if the didget only occues once, set that box to the didget
+            if len(didgetOccurencesInUnit) == 1:
+                values[didgetOccurencesInUnit[0]] = didget
 
     return values
