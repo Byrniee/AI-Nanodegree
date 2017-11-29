@@ -12,3 +12,15 @@ print("\n")
 
 values = reduce_puzzle(values)
 display(values)
+
+
+print("\n")
+print("\n")
+
+values = grid_values(grid2)
+display(values)
+
+print("\n")
+
+values = search(values)
+display(values)
