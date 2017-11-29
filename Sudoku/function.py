@@ -1,24 +1,31 @@
 from Utils import *
 
-def grid_values(grid):
-    """Convert grid string into {<box>: <value>} dict with '.' value for empties.
+def eliminate(values):
+    """Eliminate values from peers of each box with a single value.
+
+    Go through all the boxes, and whenever there is a box with a single value,
+    eliminate this value from the set of values of all its peers.
 
     Args:
-        grid: Sudoku grid in string form, 81 characters long
+        values: Sudoku in dictionary form.
     Returns:
-        Sudoku grid in dictionary form:
-        - keys: Box labels, e.g. 'A1'
-        - values: Value in corresponding box, e.g. '8', or '.' if it is empty.
+        Resulting Sudoku in dictionary form after eliminating values.
+
     """
+    # find all of the boxes which only have 1 number in them
+    solvedValues = []
 
-    possibleValues = []
-    everyPossibleValue = '123456789'
+    # find all of the boxes which only have 1 number in them
+    for box in values.keys():
+        if len(values[box]) == 1:
+            solvedValues.append(box)
 
-    for c in grid:
-        if c == '.':
-            possibleValues.append(everyPossibleValue)
-        else:
-            possibleValues.append(c)
-    
-    assert len(possibleValues) == 81
-    return dict(zip(boxes, possibleValues))
+    # loop through each solved box and remove the solved didget from its peers
+    for box in solvedValues:
+        solvedDidgit = values[box]
+
+        # loop through this boxes peers and remove the solved didget
+        for peer in peers[box]:
+            values[peer] = values[peer].replace(solvedDidgit, '')
+
+    return values
