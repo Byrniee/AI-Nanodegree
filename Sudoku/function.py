@@ -1,32 +1,24 @@
-from Utils import *
+from utils import *
 
-def only_choice(values):
-    """Finalize all values that are the only choice for a unit.
-
-    Go through all the units, and whenever there is a unit with a value
-    that only fits in one box, assign the value to this box.
-
-    Input: Sudoku in dictionary form.
-    Output: Resulting Sudoku in dictionary form after filling in only choices.
-    """
+def reduce_puzzle(values):
+    stalled = False
     
-    # All the posible didgets in the sudoku
-    allDidgets = "123456789"
+    while not stalled:
+        # Check how many boxes have a determined value
+        solvedValuesBefore = len([box for box in values.keys() if len(values[box]) == 1])
 
-    # Loop through each unit in the puzzel
-    for unit in unitlist:
-        # Loop through each didget in all possible didgets
-        for didget in allDidgets:
-            # This list will contain each box occurance in the unit of the didget
-            didgetOccurencesInUnit = []
+        # Your code here: Use the Eliminate Strategy
+        values = eliminate(values)
 
-            # Add each occurance of the didget to the list
-            for box in unit:
-                if didget in values[box]:
-                    didgetOccurencesInUnit.append(box)
-            
-            # if the didget only occues once, set that box to the didget
-            if len(didgetOccurencesInUnit) == 1:
-                values[didgetOccurencesInUnit[0]] = didget
+        # Your code here: Use the Only Choice Strategy
+        values = onlyChoice(values)
+
+        # Check how many boxes have a determined value, to compare
+        solvedValuesAfter = len([box for box in values.keys() if len(values[box]) == 1])
+        # If no new values were added, stop the loop.
+        stalled = solvedValuesBefore == solvedValuesAfter
+        # Sanity check, return False if there is a box with zero available values:
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            return False
 
     return values
