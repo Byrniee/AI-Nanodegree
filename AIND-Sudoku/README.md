@@ -4,7 +4,7 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: Constraint propagation is the idea of applying the same constraint multiple until the solution is found or the constraint stalls and no longer reduces the puzzle.
+A: Constraint propagation is the method of applying the same constraint multiple times until the solution is found or the constraint stalls and no longer reduces the puzzle.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
