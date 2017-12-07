@@ -1,13 +1,15 @@
 # Artificial Intelligence Nanodegree
 ## Introductory Project: Diagonal Sudoku Solver
 
+
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: Constraint propagation is the idea of applying the same constraint multiple until the solution is found or the constraint stalls and no longer reduces the puzzle.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: By adding the diagonal boxes (A1 -> I9 and A9 -> I1) to the units list, in the same way we add the rows, columns and squares. This means that the diagonal boxes are added to the appropriate boxes peers.
+
 
 ### Install
 
