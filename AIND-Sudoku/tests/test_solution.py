@@ -67,6 +67,17 @@ class TestNakedTwins(unittest.TestCase):
          'I3': '5', 'I4': '7', 'I5': '2', 'I6': '6', 'I7': '1', 'I8': '4', 'I9': '8'}
     ]
 
+    before_naked_twins_3 = {
+        "A1": "2345689", "A2": "234568", "A3": "7", "A4": "34568", "A5": "1", "A6": "23689", "A7": "234568", "A8": "345689", "A9": "2458", 
+        "B1": "2345689", "B2": "1234568", "B3": "1234569", "B4": "345678", "B5": "23456789", "B6": "236789", "B7": "2345678", "B8": "3456789", "B9": "124578", 
+        "C1": "2345689", "C2": "1234568", "C3": "1234569", "C4": "345678", "C5": "23456789", "C6": "236789", "C7": "2345678", "C8": "3456789", "C9": "124578", 
+        "D1": "36", "D2": "9", "D3": "8", "D4": "1", "D5": "36", "D6": "5", "D7": "47", "D8": "2", "D9": "47", 
+        "E1": "567", "E2": "567", "E3": "56", "E4": "2", "E5": "678", "E6": "4", "E7": "9", "E8": "1", "E9": "3", 
+        "F1": "1", "F2": "24", "F3": "24", "F4": "9", "F5": "37", "F6": "37", "F7": "58", "F8": "58", "F9": "6", 
+        "G1": "23456789", "G2": "12345678", "G3": "1234569", "G4": "345678", "G5": "23456789", "G6": "1236789", "G7": "2345678", "G8": "345678", "G9": "24578", 
+        "H1": "23456789", "H2": "12345678", "H3": "1234569", "H4": "345678", "H5": "23456789", "H6": "1236789", "H7": "2345678", "H8": "345678", "H9": "24578", 
+        "I1": "2345678", "I2": "2345678", "I3": "23456", "I4": "345678", "I5": "2345678", "I6": "23678", "I7": "1", "I8": "345678", "I9": "9"}
+
     def test_naked_twins(self):
         self.assertTrue(solution.naked_twins(self.before_naked_twins_1) in self.possible_solutions_1,
                         "Your naked_twins function produced an unexpected board.")
@@ -75,6 +86,11 @@ class TestNakedTwins(unittest.TestCase):
         self.assertTrue(solution.naked_twins(self.before_naked_twins_2) in self.possible_solutions_2,
                         "Your naked_twins function produced an unexpected board.")
 
+    def test_naked_twins3(self):
+        print()
+        solution.display(self.before_naked_twins_3)
+        print()
+        solution.display(solution.naked_twins(self.before_naked_twins_3))
 
 
 class TestDiagonalSudoku(unittest.TestCase):

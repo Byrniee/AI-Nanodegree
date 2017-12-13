@@ -64,7 +64,7 @@ def naked_twins(values):
         nakedTwinValue = values[nakedTwins[a][0]]
 
         for nakedTwinPeer in nakedTwinPeers:
-            if len(values[nakedTwinPeer]) > 2:
+            if len(values[nakedTwinPeer]) >= 2:
                 values = assign_value(values, nakedTwinPeer, values[nakedTwinPeer].replace(nakedTwinValue[0], ''))
                 values = assign_value(values, nakedTwinPeer, values[nakedTwinPeer].replace(nakedTwinValue[1], ''))
 
