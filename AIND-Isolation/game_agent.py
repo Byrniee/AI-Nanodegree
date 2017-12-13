@@ -35,59 +35,12 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
     # TODO: finish this function!
-    raise NotImplementedError
+    return my_moves_heuristic(game, player)
 
 
-def custom_score_2(game, player):
-    """Calculate the heuristic value of a game state from the point of view
-    of the given player.
+def my_moves_heuristic(game, player):
+    return len(game.get_legal_moves(player))
 
-    Note: this function should be called from within a Player instance as
-    `self.score()` -- you should not need to call this function directly.
-
-    Parameters
-    ----------
-    game : `isolation.Board`
-        An instance of `isolation.Board` encoding the current state of the
-        game (e.g., player locations and blocked cells).
-
-    player : object
-        A player instance in the current game (i.e., an object corresponding to
-        one of the player objects `game.__player_1__` or `game.__player_2__`.)
-
-    Returns
-    -------
-    float
-        The heuristic value of the current game state to the specified player.
-    """
-    # TODO: finish this function!
-    raise NotImplementedError
-
-
-def custom_score_3(game, player):
-    """Calculate the heuristic value of a game state from the point of view
-    of the given player.
-
-    Note: this function should be called from within a Player instance as
-    `self.score()` -- you should not need to call this function directly.
-
-    Parameters
-    ----------
-    game : `isolation.Board`
-        An instance of `isolation.Board` encoding the current state of the
-        game (e.g., player locations and blocked cells).
-
-    player : object
-        A player instance in the current game (i.e., an object corresponding to
-        one of the player objects `game.__player_1__` or `game.__player_2__`.)
-
-    Returns
-    -------
-    float
-        The heuristic value of the current game state to the specified player.
-    """
-    # TODO: finish this function!
-    raise NotImplementedError
 
 
 class IsolationPlayer:
@@ -212,8 +165,77 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        bestScore = float("-inf")
+        bestMove = None
+
+        # Loop through each possible move for this game state.
+        for move in game.get_legal_moves():
+            value = self.min_value(game.forecast_move(move), depth - 1)
+
+            # Select the best possible move
+            if value > bestScore:
+                bestScore = value
+                bestMove = move
+
+        return bestMove
+
+
+    def terminal_test(self, gameState):
+        """ Return True if the game is over for the active player
+        and False otherwise.
+        """
+        return len(gameState.get_legal_moves()) == 0
+
+
+    def min_value(self, gameState, depth):
+        """ Return the value for a win (+1) if the game is over,
+        otherwise return the minimum value over all legal child
+        nodes.
+        """
+
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        if self.terminal_test(gameState):
+            return 1
+
+        if depth == 0:
+            return self.score(gameState, gameState.active_player)
+
+        # Preset to highest possible number as we are looking for the lowest possible number
+        value = float("inf")
+
+        # Test each available move
+        for move in gameState.get_legal_moves():
+            value = min(value, self.max_value(gameState.forecast_move(move), depth - 1))
+
+        return value
+
+
+    def max_value(self, gameState, depth):
+        """ Return the value for a loss (-1) if the game is over,
+        otherwise return the maximum value over all legal child
+        nodes.
+        """
+
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        # Check for a termainal state
+        if self.terminal_test(gameState):
+            return -1
+
+        if depth == 0:
+            return self.score(gameState, gameState.active_player)
+
+        # Preset to lowest possible number as we are looking for the highest possible number
+        value = float("-inf")
+
+        # Test each available move
+        for move in gameState.get_legal_moves():
+            value = max(value, self.min_value(gameState.forecast_move(move), depth - 1))
+
+        return value
 
 
 class AlphaBetaPlayer(IsolationPlayer):
