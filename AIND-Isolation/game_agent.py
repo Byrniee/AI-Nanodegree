@@ -35,12 +35,43 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
     # TODO: finish this function!
+    return weighted_chances_heuristic(game, player)
+
+
+def custom_score_2(game, player):
+    return my_moves_heuristic(game, player)
+
+
+def custom_score_3(game, player):
     return my_moves_heuristic(game, player)
 
 
 def my_moves_heuristic(game, player):
     return len(game.get_legal_moves(player))
 
+def weighted_chances_heuristic(game, player):
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    myMoves = len(game.get_legal_moves(player))
+    opponentMoves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return (1.5 * myMoves * myMoves) - (opponentMoves * opponentMoves)
+
+def aggressive_heuristic(game, player):
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    myMoves = len(game.get_legal_moves(player))
+    opponentMoves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    return myMoves - 1.5 * opponentMoves
 
 
 class IsolationPlayer:
@@ -196,10 +227,8 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        if self.terminal_test(gameState):
-            return 1
-
-        if depth == 0:
+        # Check for a termainal state
+        if self.terminal_test(gameState) or depth == 0:
             return self.score(gameState, gameState.active_player)
 
         # Preset to highest possible number as we are looking for the lowest possible number
@@ -222,10 +251,7 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # Check for a termainal state
-        if self.terminal_test(gameState):
-            return -1
-
-        if depth == 0:
+        if self.terminal_test(gameState) or depth == 0:
             return self.score(gameState, gameState.active_player)
 
         # Preset to lowest possible number as we are looking for the highest possible number
@@ -276,8 +302,25 @@ class AlphaBetaPlayer(IsolationPlayer):
         """
         self.time_left = time_left
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        # Initialize the best move so that this function returns something
+        # in case the search fails due to timeout
+        best_move = (-1, -1)
+
+        try:
+            # The try/except block will automatically catch the exception
+            # raised when the timer is about to expire.
+            for depth in range(1, game.width * game.height):
+                    best_move = self.alphabeta(game, depth)
+
+        except SearchTimeout:
+            pass  # Handle any actions required after timeout as needed
+
+        if best_move == (-1, -1) and len(game.get_legal_moves()) > 0:
+            best_move = game.get_legal_moves[random.randint(0, len(game.get_legal_moves) - 1)]
+
+        # Return the best move from the last completed search iteration
+        return best_move
+
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
@@ -327,5 +370,69 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        bestScore = float("-inf")
+        bestMove = None
+
+        # Loop through each possible move for this game state.
+        for move in game.get_legal_moves():
+            value = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
+
+            # Select the best possible move
+            if value > bestScore:
+                bestScore = value
+                bestMove = move
+
+        return bestMove
+
+    def terminal_test(self, gameState):
+        """ Return True if the game is over for the active player
+        and False otherwise.
+        """
+        return len(gameState.get_legal_moves()) == 0
+
+    def min_value(self, gameState, depth, alpha, beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+        
+        # Check for a termainal state
+        if self.terminal_test(gameState) or depth == 0:
+            return self.score(gameState, gameState.active_player)
+
+        # Preset to highest possible number as we are looking for the lowest possible number
+        value = float("inf")
+
+        # Test each available move
+        for move in gameState.get_legal_moves():
+            value = min(value, self.max_value(gameState.forecast_move(move), depth - 1, alpha, beta))
+            
+            if value <= alpha:
+                return value
+
+            beta = min(value, beta)
+
+        return value
+
+    
+    def max_value(self, gameState, depth, alpha, beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        # Check for a termainal state
+        if self.terminal_test(gameState) or depth == 0:
+            return self.score(gameState, gameState.active_player)
+
+        # Preset to lowest possible number as we are looking for the highest possible number
+        value = float("-inf")
+
+        # Test each available move
+        for move in gameState.get_legal_moves():
+            value = max(value, self.min_value(gameState.forecast_move(move), depth - 1, alpha, beta))
+
+            if value >= beta:
+                return value
+
+            alpha = max(value, alpha)
+
+        return value
+
+

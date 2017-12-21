@@ -1,10 +1,10 @@
 from isolation import Board
-from sample_players import (RandomPlayer, HumanPlayer)
+from sample_players import (RandomPlayer, HumanPlayer, GreedyPlayer)
 from game_agent import (MinimaxPlayer, AlphaBetaPlayer)
 
 # create an isolation board (by default 7x7)
-player1 = RandomPlayer()
-player2 = MinimaxPlayer()
+player1 = GreedyPlayer()
+player2 = AlphaBetaPlayer()
 game = Board(player1, player2)
 
 winner, history, outcome = game.play()
