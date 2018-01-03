@@ -4,7 +4,7 @@ from game_agent import (MinimaxPlayer, AlphaBetaPlayer)
 
 # create an isolation board (by default 7x7)
 player1 = GreedyPlayer()
-player2 = AlphaBetaPlayer()
+player2 = MinimaxPlayer()
 game = Board(player1, player2)
 
 winner, history, outcome = game.play()

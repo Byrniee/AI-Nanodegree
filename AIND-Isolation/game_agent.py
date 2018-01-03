@@ -35,7 +35,7 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
     # TODO: finish this function!
-    return weighted_chances_heuristic(game, player)
+    return maximise_ratio_of_player_to_opponent_moves(game, player)
 
 
 def custom_score_2(game, player):
@@ -43,13 +43,37 @@ def custom_score_2(game, player):
 
 
 def custom_score_3(game, player):
-    return my_moves_heuristic(game, player)
+    return maximise_player_moves(game, player)
 
 
 def my_moves_heuristic(game, player):
-    return len(game.get_legal_moves(player))
+    if game.is_loser(player):
+        return float("-inf")
 
-def weighted_chances_heuristic(game, player):
+    if game.is_winner(player):
+        return float("inf")
+
+    return float(len(game.get_legal_moves(player)))
+
+def maximise_player_moves(game, player):
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return 1.5 * len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
+
+def minimise_opponent_moves(game, player):
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return len(game.get_legal_moves(player)) - 1.5 * len(game.get_legal_moves(game.get_opponent(player)))
+
+def maximise_ratio_of_player_to_opponent_moves(game, player):
     if game.is_loser(player):
         return float("-inf")
 
@@ -59,9 +83,15 @@ def weighted_chances_heuristic(game, player):
     myMoves = len(game.get_legal_moves(player))
     opponentMoves = len(game.get_legal_moves(game.get_opponent(player)))
 
-    return (1.5 * myMoves * myMoves) - (opponentMoves * opponentMoves)
+    if myMoves == 0:
+        return float("-inf")
 
-def aggressive_heuristic(game, player):
+    if opponentMoves == 0:
+        return float("inf")
+
+    return myMoves / opponentMoves
+
+def minimise_ratio_of_player_to_opponent_moves(game, player):
     if game.is_loser(player):
         return float("-inf")
 
@@ -71,7 +101,13 @@ def aggressive_heuristic(game, player):
     myMoves = len(game.get_legal_moves(player))
     opponentMoves = len(game.get_legal_moves(game.get_opponent(player)))
 
-    return myMoves - 1.5 * opponentMoves
+    if myMoves == 0:
+        return float("-inf")
+
+    if opponentMoves == 0:
+        return float("inf")
+
+    return -(opponentMoves / myMoves)
 
 
 class IsolationPlayer:
@@ -146,9 +182,11 @@ class MinimaxPlayer(IsolationPlayer):
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
-            return self.minimax(game, self.search_depth)
+            best_move = self.minimax(game, self.search_depth)
+            #print("[Minimax] Best move found")
 
         except SearchTimeout:
+            #print("[Minimax] Search timeout")
             pass  # Handle any actions required after timeout as needed
 
         # Return the best move from the last completed search iteration
@@ -197,14 +235,14 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         bestScore = float("-inf")
-        bestMove = None
+        bestMove = (-1, -1)
 
         # Loop through each possible move for this game state.
         for move in game.get_legal_moves():
             value = self.min_value(game.forecast_move(move), depth - 1)
 
             # Select the best possible move
-            if value > bestScore:
+            if value >= bestScore:
                 bestScore = value
                 bestMove = move
 
@@ -310,13 +348,15 @@ class AlphaBetaPlayer(IsolationPlayer):
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
             for depth in range(1, game.width * game.height):
-                    best_move = self.alphabeta(game, depth)
+                best_move = self.alphabeta(game, depth)
+                #print("[Alphabeta] Best move found")
 
         except SearchTimeout:
+            #print("[Alphabeta] Search timeout")
             pass  # Handle any actions required after timeout as needed
 
         if best_move == (-1, -1) and len(game.get_legal_moves()) > 0:
-            best_move = game.get_legal_moves[random.randint(0, len(game.get_legal_moves) - 1)]
+            best_move = game.get_legal_moves()[random.randint(0, len(game.get_legal_moves()) - 1)]
 
         # Return the best move from the last completed search iteration
         return best_move
@@ -371,14 +411,14 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         bestScore = float("-inf")
-        bestMove = None
+        bestMove = (-1, -1)
 
         # Loop through each possible move for this game state.
         for move in game.get_legal_moves():
             value = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
 
             # Select the best possible move
-            if value > bestScore:
+            if value >= bestScore:
                 bestScore = value
                 bestMove = move
 
