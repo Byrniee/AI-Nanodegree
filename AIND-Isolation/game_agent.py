@@ -411,6 +411,11 @@ class AlphaBetaPlayer(IsolationPlayer):
                 bestScore = value
                 bestMove = move
 
+            if value >= beta:
+                return bestMove
+
+            alpha = max(value, alpha)
+
         return bestMove
 
     def min_value(self, gameState, depth, alpha, beta):
