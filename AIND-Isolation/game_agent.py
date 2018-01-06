@@ -183,10 +183,8 @@ class MinimaxPlayer(IsolationPlayer):
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
             best_move = self.minimax(game, self.search_depth)
-            #print("[Minimax] Best move found")
 
         except SearchTimeout:
-            #print("[Minimax] Search timeout")
             pass  # Handle any actions required after timeout as needed
 
         # Return the best move from the last completed search iteration
@@ -240,21 +238,13 @@ class MinimaxPlayer(IsolationPlayer):
         # Loop through each possible move for this game state.
         for move in game.get_legal_moves():
             value = self.min_value(game.forecast_move(move), depth - 1)
-
+            
             # Select the best possible move
-            if value >= bestScore:
+            if value > bestScore:
                 bestScore = value
                 bestMove = move
-
+                
         return bestMove
-
-
-    def terminal_test(self, gameState):
-        """ Return True if the game is over for the active player
-        and False otherwise.
-        """
-        return len(gameState.get_legal_moves()) == 0
-
 
     def min_value(self, gameState, depth):
         """ Return the value for a win (+1) if the game is over,
@@ -266,8 +256,8 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # Check for a termainal state
-        if self.terminal_test(gameState) or depth == 0:
-            return self.score(gameState, gameState.active_player)
+        if not bool(gameState.get_legal_moves()) or depth == 0:
+            return self.score(gameState, self)
 
         # Preset to highest possible number as we are looking for the lowest possible number
         value = float("inf")
@@ -289,8 +279,8 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # Check for a termainal state
-        if self.terminal_test(gameState) or depth == 0:
-            return self.score(gameState, gameState.active_player)
+        if not bool(gameState.get_legal_moves()) or depth == 0:
+            return self.score(gameState, self)
 
         # Preset to lowest possible number as we are looking for the highest possible number
         value = float("-inf")
@@ -347,16 +337,15 @@ class AlphaBetaPlayer(IsolationPlayer):
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
-            for depth in range(1, game.width * game.height):
+            for depth in range(1000):
                 best_move = self.alphabeta(game, depth)
-                #print("[Alphabeta] Best move found")
 
         except SearchTimeout:
-            #print("[Alphabeta] Search timeout")
             pass  # Handle any actions required after timeout as needed
 
         if best_move == (-1, -1) and len(game.get_legal_moves()) > 0:
-            best_move = game.get_legal_moves()[random.randint(0, len(game.get_legal_moves()) - 1)]
+            pass
+            #best_move = game.get_legal_moves()[random.randint(0, len(game.get_legal_moves()) - 1)]
 
         # Return the best move from the last completed search iteration
         return best_move
@@ -418,25 +407,19 @@ class AlphaBetaPlayer(IsolationPlayer):
             value = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
 
             # Select the best possible move
-            if value >= bestScore:
+            if value > bestScore:
                 bestScore = value
                 bestMove = move
 
         return bestMove
-
-    def terminal_test(self, gameState):
-        """ Return True if the game is over for the active player
-        and False otherwise.
-        """
-        return len(gameState.get_legal_moves()) == 0
 
     def min_value(self, gameState, depth, alpha, beta):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
         
         # Check for a termainal state
-        if self.terminal_test(gameState) or depth == 0:
-            return self.score(gameState, gameState.active_player)
+        if not bool(gameState.get_legal_moves()) or depth == 0:
+            return self.score(gameState, self)
 
         # Preset to highest possible number as we are looking for the lowest possible number
         value = float("inf")
@@ -458,8 +441,8 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         # Check for a termainal state
-        if self.terminal_test(gameState) or depth == 0:
-            return self.score(gameState, gameState.active_player)
+        if not bool(gameState.get_legal_moves()) or depth == 0:
+            return self.score(gameState, self)
 
         # Preset to lowest possible number as we are looking for the highest possible number
         value = float("-inf")
