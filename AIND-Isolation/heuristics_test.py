@@ -25,7 +25,7 @@ from game_agent import (MinimaxPlayer, AlphaBetaPlayer, my_moves_heuristic,
                         maximise_ratio_of_player_to_opponent_moves,
                         minimise_ratio_of_player_to_opponent_moves)
 
-NUM_MATCHES = 25  # number of matches against each opponent
+NUM_MATCHES = 1  # number of matches against each opponent
 TIME_LIMIT = 150  # number of milliseconds before timeout
 
 DESCRIPTION = """
@@ -105,17 +105,15 @@ def play_matches(cpu_agents, test_agents, num_matches):
         total = 0.
 
         for index, cpuAgent in enumerate(cpu_agents[:-1]):
-            print("  Match {}: {!s:^45} vs {!s:^11}".format(index + 1, testAgent.name, cpuAgent.name), end=' ')
+            print("  Match {}: {} vs {!s:^11}".format(index + 1, testAgent.name, cpuAgent.name), end=' ')
 
             counts = {testAgent.player: 0., cpuAgent.player: 0.}
 
-            # Each player takes a turn going first
-            for p1, p2 in itertools.permutations((testAgent.player, cpuAgent.player)):
-                for a in range(num_matches):
-                    score_1, score_2 = play_match(p1, p2)
-                    counts[p1] += score_1
-                    counts[p2] += score_2
-                    total += score_1 + score_2
+            for a in range(num_matches):
+                score_1, score_2 = play_match(testAgent.player, cpuAgent.player)
+                counts[testAgent.player] += score_1
+                counts[cpuAgent.player] += score_2
+                total += score_1 + score_2
 
             wins += counts[testAgent.player]
 

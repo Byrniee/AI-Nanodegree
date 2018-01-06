@@ -3,18 +3,18 @@ from sample_players import (RandomPlayer, HumanPlayer, GreedyPlayer, center_scor
 from game_agent import (MinimaxPlayer, AlphaBetaPlayer)
 
 # create an isolation board (by default 7x7)
-#player1 = MinimaxPlayer(score_fn=center_score, search_depth=1)
-#player2 = GreedyPlayer()
-#game = Board(player1, player2)
+player1 = MinimaxPlayer()
+player2 = GreedyPlayer()
+game = Board(player1, player2)
 
 
-#winner, history, outcome = game.play()
-#print("\nWinner: {}\nOutcome: {}".format(winner, outcome))
-#print(game.to_string())
-#print("Move history:\n{!s}".format(history))
+winner, history, outcome = game.play()
+print("\nWinner: {}\nOutcome: {}".format(winner, outcome))
+print(game.to_string())
+print("Move history:\n{!s}".format(history))
 
 
-
+"""
 import timeit
 
 player1 = AlphaBetaPlayer(score_fn=improved_score, search_depth=1)
@@ -38,3 +38,4 @@ moves.sort()
 
 print(game.to_string())
 print(moves)
+"""
