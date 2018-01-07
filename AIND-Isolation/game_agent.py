@@ -34,8 +34,7 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    return maximise_ratio_of_player_to_opponent_moves(game, player)
+    return minimise_ratio_of_player_to_opponent_moves(game, player)
 
 
 def custom_score_2(game, player):

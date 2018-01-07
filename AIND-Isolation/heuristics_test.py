@@ -25,7 +25,7 @@ from game_agent import (MinimaxPlayer, AlphaBetaPlayer, my_moves_heuristic,
                         maximise_ratio_of_player_to_opponent_moves,
                         minimise_ratio_of_player_to_opponent_moves)
 
-NUM_MATCHES = 1  # number of matches against each opponent
+NUM_MATCHES = 50  # number of matches against each opponent
 TIME_LIMIT = 150  # number of milliseconds before timeout
 
 DESCRIPTION = """
